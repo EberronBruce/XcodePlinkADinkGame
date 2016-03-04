@@ -16,6 +16,7 @@ class GameScene: SKScene {
         
         makeWallsAndGround()
         makeGoals()
+        makePegs(8, numberOfRow: 5, pegRadius: 5, rowSpacing: 40, yStart: 120)
     }
     
     func makeWallsAndGround(){
@@ -42,7 +43,58 @@ class GameScene: SKScene {
 
     }
     
+    //This will make a pegs for the game
+    func makePegs(numberofPegsInRow : Int, numberOfRow : Int, pegRadius : CGFloat, rowSpacing : CGFloat, yStart : CGFloat){
+        
+        let pegSpacing = (self.frame.size.width - (CGFloat(numberofPegsInRow) * pegRadius * 2))/CGFloat(numberofPegsInRow + 1)
+        for pegNumber in 0...(numberofPegsInRow - 1){
+            
+            
+            
+            let peg = SKSpriteNode(color: UIColor.blueColor(), size: CGSize(width: pegRadius*2, height: pegRadius*2))
+            let pegX = pegSpacing + pegRadius + (pegRadius * 2 * CGFloat(pegNumber)) + (pegSpacing * CGFloat(pegNumber))
+            peg.position = CGPoint(x: pegX, y: 200)
+            peg.physicsBody = SKPhysicsBody(circleOfRadius: pegRadius)
+            peg.physicsBody?.dynamic = false
+            self.addChild(peg)
+        }
+        
+    }
+    
+    //Creating the goals
     func makeGoals(){
+        //Setting the height and with of the posts
+        let postWidth = CGFloat(10)
+        let postHeight = CGFloat(80)
+        
+        //setting up the first post
+        let post1 = SKSpriteNode(color: UIColor.redColor(), size: CGSize(width: postWidth, height: postHeight))
+        post1.position = CGPoint(x: self.frame.size.width * 0.25, y: postHeight/2)
+        post1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: postWidth, height: postHeight))
+        post1.physicsBody?.dynamic = false
+        self.addChild(post1)
+        
+        //setting up the second post
+        let post2 = SKSpriteNode(color: UIColor.redColor(), size: CGSize(width: postWidth, height: postHeight))
+        post2.position = CGPoint(x: self.frame.size.width * 0.45, y: postHeight/2)
+        post2.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: postWidth, height: postHeight))
+        post2.physicsBody?.dynamic = false
+        self.addChild(post2)
+        
+        //setting up the third post
+        let post3 = SKSpriteNode(color: UIColor.redColor(), size: CGSize(width: postWidth, height: postHeight))
+        post3.position = CGPoint(x: self.frame.size.width * 0.55, y: postHeight/2)
+        post3.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: postWidth, height: postHeight))
+        post3.physicsBody?.dynamic = false
+        self.addChild(post3)
+        
+        //setting up the fourth post
+        let post4 = SKSpriteNode(color: UIColor.redColor(), size: CGSize(width: postWidth, height: postHeight))
+        post4.position = CGPoint(x: self.frame.size.width * 0.75, y: postHeight/2)
+        post4.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: postWidth, height: postHeight))
+        post4.physicsBody?.dynamic = false
+        self.addChild(post4)
+
         
     }
     
@@ -54,8 +106,8 @@ class GameScene: SKScene {
             
             let spaceShip = SKSpriteNode(imageNamed:"Spaceship")
             
-            spaceShip.xScale = 0.1
-            spaceShip.yScale = 0.1
+            spaceShip.xScale = 0.05
+            spaceShip.yScale = 0.05
             spaceShip.position = touch.locationInNode(self)
             
             spaceShip.physicsBody = SKPhysicsBody(circleOfRadius: spaceShip.size.height/2)
