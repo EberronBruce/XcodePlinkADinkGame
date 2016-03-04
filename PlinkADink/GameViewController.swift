@@ -14,6 +14,9 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+    }
+
+    override func viewWillLayoutSubviews() {
         if let scene = GameScene(fileNamed:"GameScene") {
             // Configure the view.
             let skView = self.view as! SKView
@@ -25,9 +28,12 @@ class GameViewController: UIViewController {
             
             /* Set the scale mode to scale to fit the window */
             scene.scaleMode = .AspectFill
+            //Set the scence size to view controller
+            scene.size = self.view.frame.size
             
             skView.presentScene(scene)
         }
+
     }
 
     override func shouldAutorotate() -> Bool {
@@ -42,10 +48,6 @@ class GameViewController: UIViewController {
         }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Release any cached data, images, etc that aren't in use.
-    }
 
     override func prefersStatusBarHidden() -> Bool {
         return true

@@ -10,32 +10,58 @@ import SpriteKit
 
 class GameScene: SKScene {
     override func didMoveToView(view: SKView) {
-        /* Setup your scene here */
-        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
-        myLabel.text = "Hello, World!"
-        myLabel.fontSize = 45
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame))
         
-        self.addChild(myLabel)
+        view.showsPhysics = true
+        self.backgroundColor = UIColor.whiteColor()
+        
+        makeWallsAndGround()
+        makeGoals()
+    }
+    
+    func makeWallsAndGround(){
+        //Setting up the ground
+        let ground = SKSpriteNode(color: UIColor.redColor(), size: CGSize(width: self.frame.size.width, height: 20))
+        ground.position = CGPoint(x: self.frame.size.width/2, y: -10)
+        ground.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: self.frame.size.width, height:20))
+        ground.physicsBody?.dynamic = false
+        self.addChild(ground)
+        
+        //setting up the left wall
+        let leftWall = SKSpriteNode(color: UIColor.redColor(), size: CGSize(width: 20, height: self.frame.size.height))
+        leftWall.position = CGPoint(x: -10, y: self.frame.size.height/2)
+        leftWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 20, height: self.frame.size.height))
+        leftWall.physicsBody?.dynamic = false
+        self.addChild(leftWall)
+        
+        //setting up the right wall
+        let rightWall = SKSpriteNode(color: UIColor.redColor(), size: CGSize(width: 20, height: self.frame.size.height))
+        rightWall.position = CGPoint(x: self.frame.size.width + 10, y: self.frame.size.height/2)
+        rightWall.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 20, height: self.frame.size.height))
+        rightWall.physicsBody?.dynamic = false
+        self.addChild(rightWall)
+
+    }
+    
+    func makeGoals(){
+        
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
        /* Called when a touch begins */
         
         for touch in touches {
-            let location = touch.locationInNode(self)
             
-            let sprite = SKSpriteNode(imageNamed:"Spaceship")
             
-            sprite.xScale = 0.5
-            sprite.yScale = 0.5
-            sprite.position = location
+            let spaceShip = SKSpriteNode(imageNamed:"Spaceship")
             
-            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
+            spaceShip.xScale = 0.1
+            spaceShip.yScale = 0.1
+            spaceShip.position = touch.locationInNode(self)
             
-            sprite.runAction(SKAction.repeatActionForever(action))
+            spaceShip.physicsBody = SKPhysicsBody(circleOfRadius: spaceShip.size.height/2)
             
-            self.addChild(sprite)
+            
+            self.addChild(spaceShip)
         }
     }
    
