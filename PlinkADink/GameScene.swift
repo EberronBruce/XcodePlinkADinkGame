@@ -13,7 +13,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var discs = [SKSpriteNode]()
     var remainingLabel = SKLabelNode()
     var scoreLabel = SKLabelNode()
-    let numberOfDiscs = 5
+    let numberOfDiscs = 15
     var topPeg : CGPoint = CGPoint(x: 0, y: 0)
     let postWidth = CGFloat(10)
     var score = 0
@@ -31,14 +31,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.physicsWorld.contactDelegate = self
         
-        view.showsPhysics = true
+        //view.showsPhysics = true
         self.backgroundColor = UIColor.whiteColor()
         
         makeTopLabels()
         makeWallsAndGround()
         makePosts()
         makeGoals()
-        makePegs(10, numberOfRows: 12, pegRadius: 5, rowSpacing: 40, yStart: 120)
+        makeGoalScoreLabels()
+        makePegs(10, numberOfRows: 12, pegRadius: 4, rowSpacing: 40, yStart: 120)
     }
     
     //Make the labels at the top
@@ -111,7 +112,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //Calculates the pegs in a row
             for pegNumber in 0...(numberofPegsInRow - 1){
                 
-                let peg = SKSpriteNode(color: UIColor.blueColor(), size: CGSize(width: pegRadius*2, height: pegRadius*2))
+                //let peg = SKSpriteNode(color: UIColor.blueColor(), size: CGSize(width: pegRadius*2, height: pegRadius*2))
+                let peg = SKSpriteNode(imageNamed: "ball0")
                 let pegX : CGFloat = extraSpacing + (pegSpacing * 0.75) + pegRadius + (pegRadius * 2 * CGFloat(pegNumber)) + (pegSpacing * CGFloat(pegNumber))
                 let pegY : CGFloat = yStart + (CGFloat(rowNumber) * rowSpacing)
                 peg.position = CGPoint(x: pegX, y: pegY)
@@ -223,6 +225,52 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     }
     
+    //Make the labels for the score
+    func makeGoalScoreLabels(){
+        let goalHeight = CGFloat(70)
+        let yPosition = goalHeight / 2
+        let bigGoalWidth = (self.frame.size.width * 0.25) - (self.postWidth / 2)
+        let mediumGoalWidth = (self.frame.size.width * 0.2) - (self.postWidth)
+        let smallGoalWidth = (self.frame.size.width * 0.1) - (self.postWidth)
+
+      
+        
+        let left100 = SKLabelNode(text: "100")
+        left100.fontColor = UIColor.blackColor()
+        left100.fontSize = 20
+        var xPosition = (bigGoalWidth / 2)
+        left100.position = CGPoint(x: xPosition, y: yPosition)
+        self.addChild(left100)
+        
+        let left200 = SKLabelNode(text: "200")
+        left200.fontColor = UIColor.blackColor()
+        left200.fontSize = 20
+        xPosition = bigGoalWidth + self.postWidth + (mediumGoalWidth / 2)
+        left200.position = CGPoint(x: xPosition, y: yPosition)
+        self.addChild(left200)
+        
+        let center = SKLabelNode(text: "💰")
+        center.fontColor = UIColor.blackColor()
+        center.fontSize = 20
+        xPosition = bigGoalWidth + (2 * self.postWidth) + mediumGoalWidth + (smallGoalWidth / 2)
+        center.position = CGPoint(x: xPosition, y: yPosition)
+        self.addChild(center)
+        
+        let right200 = SKLabelNode(text: "200")
+        right200.fontColor = UIColor.blackColor()
+        right200.fontSize = 20
+        xPosition = bigGoalWidth + (3 * self.postWidth) + mediumGoalWidth + smallGoalWidth + (mediumGoalWidth / 2)
+        right200.position = CGPoint(x: xPosition, y: yPosition)
+        self.addChild(right200)
+        
+        let right100 = SKLabelNode(text: "100")
+        right100.fontColor = UIColor.blackColor()
+        right100.fontSize = 20
+        xPosition = bigGoalWidth + (4 * self.postWidth) + (2 * mediumGoalWidth) + smallGoalWidth + (bigGoalWidth / 2)
+        right100.position = CGPoint(x: xPosition, y: yPosition)
+        self.addChild(right100)
+    }
+    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch begins */
         
@@ -247,13 +295,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                 }else {
                     
-                    let disc = SKSpriteNode(imageNamed:"Spaceship")
+                    let disc = SKSpriteNode(imageNamed:"ball\(self.discs.count+1)")
                     
                     disc.xScale = 0.05
                     disc.yScale = 0.05
                     disc.position = touch.locationInNode(self)
                     
-                    disc.physicsBody = SKPhysicsBody(circleOfRadius: disc.size.height/2)
+                    disc.physicsBody = SKPhysicsBody(circleOfRadius: disc.size.height/4)
                     disc.physicsBody?.categoryBitMask = self.discCategory //Set bitmask
                     //Set collisions
                     disc.physicsBody?.collisionBitMask = self.pegCategory | self.postCategory | self.borderCategory | self.discCategory
@@ -273,15 +321,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func didBeginContact(contact: SKPhysicsContact) {
         if contact.bodyA.categoryBitMask == self.bigGoalCategory || contact.bodyB.categoryBitMask == self.bigGoalCategory {
-            print("Big ASS")
+            //print("Big")
             self.score += 100
         }
         if contact.bodyA.categoryBitMask == self.mediumGoalCategory || contact.bodyB.categoryBitMask == self.mediumGoalCategory {
-            print("Medium ASS")
+            //print("Medium")
             self.score += 200
         }
         if contact.bodyA.categoryBitMask == self.smallGoalCategory || contact.bodyB.categoryBitMask == self.smallGoalCategory {
-            print("Small ASS")
+            //print("Small")
             self.score += 500
         }
         updateLabels()
