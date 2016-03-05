@@ -16,6 +16,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let numberOfDiscs = 5
     var topPeg : CGPoint = CGPoint(x: 0, y: 0)
     let postWidth = CGFloat(10)
+    var score = 0
     
     //Make bitmasks
     let discCategory : UInt32 = 1 << 0
@@ -48,7 +49,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.remainingLabel.position = CGPoint(x: self.frame.size.width * 0.25, y: self.frame.size.height - 20.0)
         self.addChild(self.remainingLabel)
         
-        self.scoreLabel = SKLabelNode(text: "Score: 0")
+        self.scoreLabel = SKLabelNode(text: "Score: \(self.score)")
         self.scoreLabel.fontColor = UIColor.blackColor()
         self.scoreLabel.fontSize = 20
         self.scoreLabel.position = CGPoint(x: self.frame.size.width * 0.75, y: self.frame.size.height - 20.0)
@@ -58,7 +59,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //Used to update the labels on top
     func updateLabels() {
-        self.remainingLabel.text = "Remaining : \(numberOfDiscs-self.discs.count)"
+        self.remainingLabel.text = "Remaining: \(numberOfDiscs-self.discs.count)"
+        self.scoreLabel.text = "Score: \(self.score)"
     }
     
     //Make the ground and walls
@@ -174,7 +176,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let yPosition = goalHeight / 2
         
         //setting up the first goal
-        let goal1 = SKSpriteNode(color: UIColor.purpleColor(), size: CGSize(width: bigGoalWidth, height: goalHeight))
+        let goal1 = SKSpriteNode(color: UIColor.clearColor(), size: CGSize(width: bigGoalWidth, height: goalHeight)) //Use clear color for demostration
         var xPosition = (bigGoalWidth / 2)
         goal1.position = CGPoint(x: xPosition, y: yPosition)
         goal1.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: bigGoalWidth, height: goalHeight))
@@ -183,7 +185,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(goal1)
         
         //setting up the second goal
-        let goal2 = SKSpriteNode(color: UIColor.purpleColor(), size: CGSize(width: mediumGoalWidth, height: goalHeight))
+        let goal2 = SKNode() //set SKNode for clear
         xPosition = bigGoalWidth + self.postWidth + (mediumGoalWidth / 2)
         goal2.position = CGPoint(x: xPosition, y: yPosition)
         goal2.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: mediumGoalWidth, height: goalHeight))
@@ -192,7 +194,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(goal2)
         
         //setting up the third goal
-        let goal3 = SKSpriteNode(color: UIColor.purpleColor(), size: CGSize(width: smallGoalWidth, height: goalHeight))
+        let goal3 = SKNode()
         xPosition = bigGoalWidth + (2 * self.postWidth) + mediumGoalWidth + (smallGoalWidth / 2)
         goal3.position = CGPoint(x: xPosition , y: yPosition)
         goal3.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: smallGoalWidth, height: goalHeight))
@@ -201,7 +203,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(goal3)
         
         //setting up the fourth goal
-        let goal4 = SKSpriteNode(color: UIColor.purpleColor(), size: CGSize(width: mediumGoalWidth, height: goalHeight))
+        let goal4 = SKNode()
         xPosition = bigGoalWidth + (3 * self.postWidth) + mediumGoalWidth + smallGoalWidth + (mediumGoalWidth / 2)
         goal4.position = CGPoint(x: xPosition, y: yPosition)
         goal4.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: mediumGoalWidth, height: goalHeight))
@@ -210,7 +212,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(goal4)
         
         //setting up the fifth goal
-        let goal5 = SKSpriteNode(color: UIColor.purpleColor(), size: CGSize(width: bigGoalWidth, height: goalHeight))
+        let goal5 = SKNode()
         xPosition = bigGoalWidth + (4 * self.postWidth) + (2 * mediumGoalWidth) + smallGoalWidth + (bigGoalWidth / 2)
         goal5.position = CGPoint(x: xPosition, y: yPosition)
         goal5.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: bigGoalWidth, height: goalHeight))
@@ -240,6 +242,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if self.discs.count >= numberOfDiscs {
                     self.removeChildrenInArray(self.discs)
                     self.discs = []
+                    self.score = 0
                     updateLabels()
                     
                 }else {
@@ -269,7 +272,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
-        print("contact")
+        if contact.bodyA.categoryBitMask == self.bigGoalCategory || contact.bodyB.categoryBitMask == self.bigGoalCategory {
+            print("Big ASS")
+            self.score += 100
+        }
+        if contact.bodyA.categoryBitMask == self.mediumGoalCategory || contact.bodyB.categoryBitMask == self.mediumGoalCategory {
+            print("Medium ASS")
+            self.score += 200
+        }
+        if contact.bodyA.categoryBitMask == self.smallGoalCategory || contact.bodyB.categoryBitMask == self.smallGoalCategory {
+            print("Small ASS")
+            self.score += 500
+        }
+        updateLabels()
     }
     
     override func update(currentTime: CFTimeInterval) {
